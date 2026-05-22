@@ -15,43 +15,25 @@ To write a program to predict the type of species of the Iris flower using the S
 ## Program:
 ```
 /*
-Program to implement the prediction of iris species using SGD Classifier.
-import numpy as np
-import pandas as pd
-import matplotlib.pyplot as plt
+from sklearn.datasets import load_iris
+from sklearn.model_selection import train_test_split
+from sklearn.linear_model import SGDClassifier
 from sklearn.preprocessing import StandardScaler
-data = pd.read_csv("Placement_Data.csv")
-data['status'] = data['status'].map({'Placed': 1, 'Not Placed': 0})
-X = data[['ssc_p', 'mba_p']].values
-y = data['status'].values
+from sklearn.metrics import accuracy_score, classification_report
+iris = load_iris()
+X = iris.data
+y = iris.target
 scaler = StandardScaler()
 X = scaler.fit_transform(X)
-m = len(y)
-X = np.c_[np.ones(m), X]
-def sigmoid(z):
-    return 1 / (1 + np.exp(-z))
-def cost_function(X, y, theta):
-    h = sigmoid(X @ theta)
-    h = np.clip(h, 1e-10, 1 - 1e-10)
-    return (-1/m) * np.sum(y*np.log(h) + (1-y)*np.log(1-h))
-theta = np.zeros(X.shape[1])
-alpha = 0.1
-cost_history = []
-for i in range(500):
-    z = X @ theta
-    h = sigmoid(z)
-    gradient = (1/m) * X.T @ (h - y)
-    theta = theta - alpha * gradient
-    cost = cost_function(X, y, theta)
-    cost_history.append(cost)
-y_pred = (sigmoid(X @ theta) >= 0.5).astype(int)
-accuracy = np.mean(y_pred == y) * 100
-print("Accuracy:", accuracy)
-plt.plot(cost_history)
-plt.xlabel("Iterations")
-plt.ylabel("Cost")
-plt.title("Cost Reduction over Time")
-plt.show()
+X_train, X_test, y_train, y_test = train_test_split(
+    X, y, test_size=0.2, random_state=42
+)
+model = SGDClassifier(max_iter=1000, random_state=42)
+model.fit(X_train, y_train)
+y_pred = model.predict(X_test)
+print("Accuracy:", accuracy_score(y_test, y_pred))
+print("\nClassification Report:\n", classification_report(y_test, y_pred))
+
 Developed by: Ritika S
 RegisterNumber: 212225220086
 */
